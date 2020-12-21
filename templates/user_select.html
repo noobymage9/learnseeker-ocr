@@ -1,0 +1,244 @@
+<!doctype html>
+
+<head>
+  <title>User Select</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      padding: 1rem;
+      box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      flex-direction: column;
+    }
+    .space {
+      margin: 0.5rem
+    }
+    #image_preview_area {
+      width: 620px;
+      height: 870px;
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+
+    #result_area {
+      display: flex;
+      width: 80%;
+      flex-wrap: wrap;
+    }
+    .image_holder {
+      margin: 0.5rem;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      height: 850px;
+      width: 620px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .image_canvas {
+      border: 2px solid black;
+    }
+    .result_canvas {
+      border: 2px solid black;
+      margin: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Image Upload</h1>
+  <input id="file_upload" type="file" onchange="viewImages()" multiple>
+  <hr />
+  <div id="image_preview_area"></div>
+  <button onclick="confirm()">Confirm</button>
+  <hr />
+  <div id="result_area"></div>
+</body>
+
+<script>
+  function createImage(file, rawData) {
+    var image = new Image()
+    image.title = file.name
+    image.src = rawData
+    return image
+  }
+
+  function createCanvas(image) {
+    var canvas = document.createElement("canvas");
+
+    image.onload = function () {
+      canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
+    }
+
+    // Purposeful tie to canvas object
+    canvas.className = "image_canvas"
+    canvas.height = 800
+    canvas.width = 600
+
+    var context = canvas.getContext("2d");
+
+    context.strokeStyle = "black";
+    context.lineWidth = 1;
+
+    var isDown = false;
+
+    var startX;
+    var startY;
+
+    // Purposeful tie to canvas object
+    canvas.rects = []
+    canvas.drawRects = function () {
+      canvas.rects.forEach((rect, index) => {
+        context.strokeRect(rect[0], rect[1], rect[2], rect[3]);
+      })
+    }
+    canvas.image = image
+
+    function handleMouseDown(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      startX = e.offsetX;
+      startY = e.offsetY
+      isDown = true;
+
+    }
+
+    function handleMouseUp(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      isDown = false;
+
+      var width = e.offsetX - startX;
+      var height = e.offsetY - startY;
+
+      canvas.rects.push([startX, startY, width, height])
+    }
+
+    function handleMouseOut(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      isDown = false;
+      context.drawImage(image, 0, 0, 600, 800)
+      canvas.drawRects()
+    }
+
+    function handleMouseMove(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!isDown) { return; }
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      var width = e.offsetX - startX;
+      var height = e.offsetY - startY;
+      context.drawImage(image, 0, 0, 600, 800)
+      context.strokeRect(startX, startY, width, height);
+      canvas.drawRects()
+
+    }
+    canvas.onmousedown = handleMouseDown
+    canvas.onmousemove = handleMouseMove
+    canvas.onmouseup = handleMouseUp
+    canvas.onmouseout = handleMouseOut
+
+    return canvas
+  }
+
+  function viewImages() {
+    var previewArea = document.querySelector('#image_preview_area')
+    var files = document.querySelector('#file_upload').files
+    var resultArea = document.querySelector('#result_area')
+
+    // Clear existing cropped images
+    resultArea.innerHTML = ""
+    // Clears previous upload previews
+    previewArea.innerHTML = ""
+
+    if (files) {
+      [].forEach.call(files, preview)
+    }
+
+    function preview(file) {
+      if (/\.(jpe?g|png)$/i.test(file.name)) {
+        var reader = new FileReader()
+
+        reader.addEventListener("load", function () {
+          var imageHolder = document.createElement("div");
+          var buttonHolder = document.createElement("div")
+          imageHolder.className = "image_holder space"
+          var image = createImage(file, this.result)
+          var canvas = createCanvas(image)
+
+          var clearAllButton = document.createElement("button")
+          clearAllButton.innerText = "Clear All"
+          clearAllButton.className = "space"
+          clearAllButton.addEventListener('click', function () {
+            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+            canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
+            canvas.rects = []
+          })
+          var clearLastButton = document.createElement("button")
+          clearLastButton.innerText = "Clear Last"
+          clearLastButton.className = "space"
+          clearLastButton.addEventListener('click', function () {
+            canvas.rects.pop()
+            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+            canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
+            canvas.drawRects()
+          })
+          buttonHolder.appendChild(clearLastButton)
+          buttonHolder.appendChild(clearAllButton)
+          imageHolder.appendChild(buttonHolder)
+          imageHolder.appendChild(canvas)
+
+          previewArea.appendChild(imageHolder)
+        }, false);
+
+        reader.readAsDataURL(file)
+      } else if (/\.(pdf)$/i.test(file.name)) {
+        console.log("PDF FILE")
+      } else {
+        console.log("Unknown File Format")
+      }
+    }
+  }
+
+  function confirm() {
+    var resultArea = document.querySelector('#result_area')
+    // Clear existing cropped images
+    resultArea.innerHTML = ""
+    canvases = document.getElementsByClassName('image_canvas')
+    for (var i = 0; i < canvases.length; i++) {
+      canvas = canvases[i]
+      canvas.rects.forEach((originalRect, index) => {
+        var newCanvas = document.createElement("canvas");
+        newCanvas.className = "result_canvas space"
+        image = canvas.image
+        rect = originalRect
+        // To correct negative dimensions
+        if (rect[2] < 0) {
+          rect[0] = rect[0] + rect[2]
+          rect[2] = -rect[2]
+        }
+        if (rect[3] < 0) {
+          rect[1] = rect[1] + rect[3]
+          rect[3] = -rect[3]
+        }
+        actualX = image.naturalWidth * rect[0] / 600
+        actualY = image.naturalHeight * rect[1] / 800
+        actualWidth = image.naturalWidth * rect[2] / 600
+        actualHeight = image.naturalHeight * rect[3] / 800
+        newCanvas.width = rect[2]
+        newCanvas.height = rect[3]
+        newCanvas.getContext("2d").drawImage(image, actualX, actualY, actualWidth, actualHeight, 0, 0, rect[2], rect[3])
+        resultArea.append(newCanvas)
+      })
+    }
+  }
+</script>
