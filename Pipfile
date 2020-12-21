@@ -12,6 +12,7 @@ ipykernel = "*"
 tqdm = "*"
 matplotlib = "*"
 scipy = "*"
+flask = "*"
 
 [dev-packages]
 
