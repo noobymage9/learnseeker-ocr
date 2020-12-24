@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "512623e1eb76806fa2697ae304f5c6241b5e7021d799bfc45a0f8f2ea9d8fdba"
+            "sha256": "eebdd130a5aa72b9251260f0418e427e54626e653b420db73e434049c4389414"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -151,6 +151,14 @@
             "index": "pypi",
             "version": "==1.1.2"
         },
+        "flask-cors": {
+            "hashes": [
+                "sha256:6bcfc100288c5d1bcb1dbb854babd59beee622ffd321e444b05f24d6d58466b8",
+                "sha256:cee4480aaee421ed029eaa788f4049e3e26d15b5affb6a880dade6bafad38324"
+            ],
+            "index": "pypi",
+            "version": "==3.0.9"
+        },
         "ipykernel": {
             "hashes": [
                 "sha256:63b4b96c513e1138874934e3e783a8e5e13c02b9036e37107bfe042ac8955005",
@@ -164,7 +172,6 @@
                 "sha256:c987e8178ced651532b3b1ff9965925bfd445c279239697052561a9ab806d28f",
                 "sha256:cbb2ef3d5961d44e6a963b9817d4ea4e1fa2eb589c371a470fed14d8d40cbd6a"
             ],
-            "markers": "python_version >= '3.3'",
             "version": "==7.19.0"
         },
         "ipython-genutils": {
@@ -389,10 +396,10 @@
         },
         "notebook": {
             "hashes": [
-                "sha256:3db37ae834c5f3b6378381229d0e5dfcbfb558d08c8ce646b1ad355147f5e91d",
-                "sha256:508cf9dad7cdb3188f1aa27017dc78179029dfe83814fc505329f689bc2ab50f"
+                "sha256:cf40d4f81541401db5a2fda1707ca7877157abd41f04ef7b88f02b67f3c61791",
+                "sha256:e6a62188e319a5d45dd2ed24719f646adf88bef8be1f654ebd0ab360ece6d7a6"
             ],
-            "version": "==6.1.5"
+            "version": "==6.1.6"
         },
         "numpy": {
             "hashes": [
@@ -530,7 +537,6 @@
                 "sha256:923f299cc5ad920c68f2bc0bc98b75b9f838b93b599941a6b63ddbc2476394c0",
                 "sha256:d7cc528d76e76342423ca640335bd3633420dc1366f258cb31d05e865ef5ca1f"
             ],
-            "markers": "os_name != 'nt'",
             "version": "==0.6.0"
         },
         "pycparser": {
