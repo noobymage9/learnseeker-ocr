@@ -13,23 +13,48 @@
       border-radius: 15px;
       flex-direction: column;
     }
+
     .space {
       margin: 0.5rem
     }
+
+    .border {
+      border: 2px solid black;
+    }
+
     #image_preview_area {
-      width: 620px;
+      width: 640px;
       height: 870px;
       display: flex;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scroll-snap-type: x mandatory;
+      flex-shrink: 0;
     }
 
-    #result_area {
+    #preview_cropped_area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+    }
+
+    #cropped_area_wrapper {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      width: 500px;
+      margin: 0.5rem;
+    }
+
+    #cropped_area {
       display: flex;
       width: 80%;
       flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
     }
+
     .image_holder {
       margin: 0.5rem;
       scroll-snap-align: start;
@@ -41,30 +66,24 @@
       justify-content: center;
       align-items: center;
     }
-    .image_canvas {
-      border: 2px solid black;
-    }
-    .result_canvas {
-      border: 2px solid black;
-      margin: 0.5rem;
-    }
   </style>
 </head>
 
 <body>
-  <h1>Image Upload</h1>
+  <h2>Image Upload</h2>
   <input id="file_upload" type="file" onchange="viewImages()" multiple>
-  <hr />
-  <div id="image_preview_area"></div>
-  <button onclick="confirm()">Confirm</button>
-  <hr />
-  <div id="result_area"></div>
+  <div id="preview_cropped_area">
+    <div id="image_preview_area"></div>
+    <div id="cropped_area_wrapper">
+      <h2>Cropped Areas</h2>
+      <div id="cropped_area"></div>
+    </div>
+  </div>
 </body>
 
 <script>
-  function createImage(file, rawData) {
+  function createImage(rawData) {
     var image = new Image()
-    image.title = file.name
     image.src = rawData
     return image
   }
@@ -77,7 +96,7 @@
     }
 
     // Purposeful tie to canvas object
-    canvas.className = "image_canvas"
+    canvas.className = "image_canvas border"
     canvas.height = 800
     canvas.width = 600
 
@@ -93,6 +112,8 @@
 
     // Purposeful tie to canvas object
     canvas.rects = []
+    canvas.removedRects = []
+
     canvas.drawRects = function () {
       canvas.rects.forEach((rect, index) => {
         context.strokeRect(rect[0], rect[1], rect[2], rect[3]);
@@ -118,6 +139,8 @@
       var height = e.offsetY - startY;
 
       canvas.rects.push([startX, startY, width, height])
+      canvas.removedRects = []
+      displayCropped()
     }
 
     function handleMouseOut(e) {
@@ -153,10 +176,10 @@
   function viewImages() {
     var previewArea = document.querySelector('#image_preview_area')
     var files = document.querySelector('#file_upload').files
-    var resultArea = document.querySelector('#result_area')
-
+    var croppedArea = document.querySelector('#cropped_area')
+    var imageData = []
     // Clear existing cropped images
-    resultArea.innerHTML = ""
+    croppedArea.innerHTML = ""
     // Clears previous upload previews
     previewArea.innerHTML = ""
 
@@ -169,35 +192,10 @@
         var reader = new FileReader()
 
         reader.addEventListener("load", function () {
-          var imageHolder = document.createElement("div");
-          var buttonHolder = document.createElement("div")
-          imageHolder.className = "image_holder space"
-          var image = createImage(file, this.result)
-          var canvas = createCanvas(image)
-
-          var clearAllButton = document.createElement("button")
-          clearAllButton.innerText = "Clear All"
-          clearAllButton.className = "space"
-          clearAllButton.addEventListener('click', function () {
-            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-            canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
-            canvas.rects = []
-          })
-          var clearLastButton = document.createElement("button")
-          clearLastButton.innerText = "Clear Last"
-          clearLastButton.className = "space"
-          clearLastButton.addEventListener('click', function () {
-            canvas.rects.pop()
-            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-            canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
-            canvas.drawRects()
-          })
-          buttonHolder.appendChild(clearLastButton)
-          buttonHolder.appendChild(clearAllButton)
-          imageHolder.appendChild(buttonHolder)
-          imageHolder.appendChild(canvas)
-
-          previewArea.appendChild(imageHolder)
+          imageData.push(this.result)
+          if (imageData.length === files.length) {
+            preprocess_image()
+          }
         }, false);
 
         reader.readAsDataURL(file)
@@ -207,18 +205,81 @@
         console.log("Unknown File Format")
       }
     }
-  }
 
-  function confirm() {
-    var resultArea = document.querySelector('#result_area')
+    function preprocess_image() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "{{ url }}/image_preprocess", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          for (key in data) {
+            preprocessedImage = data[key]
+            var imageHolder = document.createElement("div");
+            var buttonHolder = document.createElement("div")
+            imageHolder.className = "image_holder space"
+            var image = createImage(`data:image/png;base64,${preprocessedImage}`)
+            var canvas = createCanvas(image)
+
+            var undoBtn = document.createElement("button")
+            undoBtn.innerText = "Undo"
+            undoBtn.className = "space"
+            undoBtn.addEventListener('click', function () {
+              canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+              canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
+              if (canvas.rects.length != 0)
+                canvas.removedRects.push(canvas.rects.pop())
+              canvas.drawRects()
+              displayCropped()
+            })
+            var clearAllBtn = document.createElement("button")
+            clearAllBtn.innerText = "Clear All"
+            clearAllBtn.className = "space"
+            clearAllBtn.addEventListener('click', function () {
+              canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+              canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
+              canvas.rects = []
+              canvas.removedRects = []
+              displayCropped()
+            })
+            var redoBtn = document.createElement("button")
+            redoBtn.innerText = "Redo"
+            redoBtn.className = "space"
+            redoBtn.addEventListener('click', function () {
+              canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+              canvas.getContext("2d").drawImage(image, 0, 0, 600, 800)
+              if (canvas.removedRects.length != 0)
+                canvas.rects.push(canvas.removedRects.shift())
+              canvas.drawRects()
+              displayCropped()
+            })
+            buttonHolder.appendChild(undoBtn)
+            buttonHolder.appendChild(clearAllBtn)
+            buttonHolder.appendChild(redoBtn)
+            imageHolder.appendChild(buttonHolder)
+            imageHolder.appendChild(canvas)
+
+            previewArea.appendChild(imageHolder)
+          }
+
+        }
+      };
+
+      var data = JSON.stringify({ "images": imageData });
+      xhr.send(data);
+
+    }
+  }
+  function displayCropped() {
+    var croppedArea = document.querySelector('#cropped_area')
     // Clear existing cropped images
-    resultArea.innerHTML = ""
+    croppedArea.innerHTML = ""
     canvases = document.getElementsByClassName('image_canvas')
     for (var i = 0; i < canvases.length; i++) {
       canvas = canvases[i]
       canvas.rects.forEach((originalRect, index) => {
         var newCanvas = document.createElement("canvas");
-        newCanvas.className = "result_canvas space"
+        newCanvas.className = "cropped_canvas border space"
         image = canvas.image
         rect = originalRect
         // To correct negative dimensions
@@ -237,7 +298,7 @@
         newCanvas.width = rect[2]
         newCanvas.height = rect[3]
         newCanvas.getContext("2d").drawImage(image, actualX, actualY, actualWidth, actualHeight, 0, 0, rect[2], rect[3])
-        resultArea.append(newCanvas)
+        croppedArea.append(newCanvas)
       })
     }
   }
