@@ -10,12 +10,12 @@ app = Flask(__name__)
 # Method 1
 @app.route('/auto_bound')
 def auto_bound():
-	return render_template('auto_bound.html', url=environ.get("SERVER_URL"))
+	return render_template('auto_bound.html', url=request.url_root)
 
 # Method 4
 @app.route('/manual_bound')
 def user_select():
-	return render_template('manual_bound.html', url=environ.get("SERVER_URL"))
+	return render_template('manual_bound.html', url=request.url_root)
 
 # Image Preprocessing
 @app.route('/image_preprocess', methods=['POST'])
