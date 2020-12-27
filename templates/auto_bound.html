@@ -1,0 +1,167 @@
+<!doctype html>
+
+<head>
+  <title>Auto Bound</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      padding: 1rem;
+      box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      flex-direction: column;
+    }
+
+    .space {
+      margin: 0.5rem
+    }
+
+    .border {
+      border: 2px solid black;
+    }
+
+    #file_upload {
+      margin-left: 4rem;
+    }
+
+    #image_preview_area {
+      width: 640px;
+      height: 870px;
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      flex-shrink: 0;
+    }
+
+    #preview_cropped_area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+    }
+
+    #cropped_area_wrapper {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      width: 600px;
+      margin: 0.5rem;
+    }
+
+    #cropped_area {
+      display: flex;
+      width: 80%;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image_holder {
+      margin: 0.5rem;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      height: 850px;
+      width: 620px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <script>
+    function preprocess_image() {
+      var previewArea = document.querySelector('#image_preview_area')
+      var croppedArea = document.querySelector('#cropped_area')
+      // Clear existing cropped images
+      croppedArea.innerHTML = ""
+      // Clears previous upload previews
+      previewArea.innerHTML = ""
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "{{ url }}/image_preprocess", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText)
+          for (i in data['images']) {
+            preprocessedImage = data['images'][i]
+            var imageHolder = document.createElement("div");
+            var buttonHolder = document.createElement("div")
+            imageHolder.className = "image_holder space"
+            var image = createImage(`data:image/png;base64,${preprocessedImage}`, 800, 600)
+            imageHolder.appendChild(buttonHolder)
+            imageHolder.appendChild(image)
+            previewArea.appendChild(imageHolder)
+            var croppedArea = document.querySelector('#cropped_area')
+            for (j in data['cropped_areas']['areas'][i]) {
+              croppedImage = data['cropped_areas']['areas'][i][j]
+              var image = createImage(`data:image/png;base64,${croppedImage}`, data['cropped_areas']['size'][i][j][1], data['cropped_areas']['size'][i][j][0])
+              croppedArea.appendChild(image)
+            }
+          }
+        }
+      }
+      var data = JSON.stringify({ "images": imageData, "zone_type": document.getElementsByName("zone_type")[0].value })
+      xhr.send(data)
+    }
+  </script>
+</head>
+
+<body>
+  <h2>Image Upload</h2>
+  <input id="file_upload" type="file" onchange="viewImages()" multiple>
+  <select class="space" name="zone_type" onchange="preprocess_image()">
+    <option value="LEFT_DETECT">Left Detect</option>
+    <option value="GROW">Grow</option>
+  </select>
+  <div id="preview_cropped_area">
+    <div id="image_preview_area"></div>
+    <div id="cropped_area_wrapper">
+      <h2>Cropped Areas</h2>
+      <div id="cropped_area"></div>
+    </div>
+  </div>
+</body>
+
+<script>
+  var imageData = []
+  function createImage(rawData, height, width) {
+    var image = new Image()
+    image.src = rawData
+    image.height = height
+    image.width = width
+    image.className = "border space"
+    return image
+  }
+
+  function viewImages() {
+    var files = document.querySelector('#file_upload').files
+    imageData = []
+    if (files) {
+      [].forEach.call(files, preview)
+    }
+
+    function preview(file) {
+      if (/\.(jpe?g|png)$/i.test(file.name)) {
+        var reader = new FileReader()
+
+        reader.addEventListener("load", function () {
+          imageData.push(this.result)
+          if (imageData.length === files.length) {
+            preprocess_image()
+          }
+        }, false);
+
+        reader.readAsDataURL(file)
+      } else if (/\.(pdf)$/i.test(file.name)) {
+        console.log("PDF FILE")
+      } else {
+        console.log("Unknown File Format")
+      }
+    }
+
+
+  }
+</script>
