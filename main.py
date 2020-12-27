@@ -4,7 +4,8 @@ from os import environ
 from image_preprocess_factory import preprocess, zone
 import numpy as np
 import cv2 as cv
-app = Flask("main")
+app = Flask(__name__)
+
 
 # Method 1
 @app.route('/auto_bound')
@@ -51,3 +52,6 @@ def encode(image = [], images = []):
 		return temp
 	else:
 		return None
+
+if __name__ == "__main__":
+  app.run(host='0.0.0.0')
