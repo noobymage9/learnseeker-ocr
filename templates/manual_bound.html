@@ -1,7 +1,7 @@
 <!doctype html>
 
 <head>
-  <title>User Select</title>
+  <title>Manual Bound</title>
   <style>
     body {
       display: flex;
@@ -20,6 +20,10 @@
 
     .border {
       border: 2px solid black;
+    }
+
+    #file_upload {
+      margin-left: 4rem;
     }
 
     #image_preview_area {
@@ -213,8 +217,8 @@
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
-          for (key in data) {
-            preprocessedImage = data[key]
+          for (i in data['images']) {
+            preprocessedImage = data['images'][i]
             var imageHolder = document.createElement("div");
             var buttonHolder = document.createElement("div")
             imageHolder.className = "image_holder space"
