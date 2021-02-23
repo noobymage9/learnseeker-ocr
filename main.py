@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, jsonify
 from base64 import b64decode, b64encode
 from os import environ
 from image_preprocess_factory import preprocess, zone
+from utilities import spell_check
 import numpy as np
 import cv2 as cv
+import pytesseract
 app = Flask(__name__)
 
 
@@ -21,6 +23,7 @@ def user_select():
 @app.route('/image_preprocess', methods=['POST'])
 def image_preprocess():
 	data = {
+		'texts': [],
 		'images': [],
 		'cropped_areas': {
 			'areas': [],
@@ -33,10 +36,30 @@ def image_preprocess():
 		image = cv.imdecode(np.frombuffer(image_bytes, np.uint8), -1)
 		preprocessed_image = preprocess(image)
 		data['images'].append(encode(image = preprocessed_image))
+		# if auto bound
 		if 'zone_type' in request.json:
 			croppedAreas = zone(preprocessed_image, request.json['zone_type'])
+			for idx, croppedArea in enumerate(croppedAreas):
+				data["texts"].append(pytesseract.image_to_string(croppedArea))
+
+			# spell_check(data['texts'])
 			data['cropped_areas']['areas'].append(encode(images = croppedAreas))
 			data['cropped_areas']['size'].append(list(map(lambda area: [(area.shape[1] / image.shape[1]) * 600, (area.shape[0] / image.shape[0]) * 800], croppedAreas)))
+	
+	return jsonify(data)
+
+@app.route('/text_recognise', methods=['POST'])
+def text_recognise():
+	data = {
+		'texts': [],
+	}
+	for idx, image_data_pack in enumerate(request.json['images']):
+		image_data = image_data_pack.split(',')[1]
+		image_bytes = b64decode(image_data)
+		image = cv.imdecode(np.frombuffer(image_bytes, np.uint8), -1)
+		data["texts"].append(pytesseract.image_to_string(image))
+
+	# spell_check(data['texts'])
 	return jsonify(data)
 
 def encode(image = [], images = []):
