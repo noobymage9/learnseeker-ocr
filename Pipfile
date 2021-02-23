@@ -16,6 +16,8 @@ Flask = "*"
 Flask-Cors = "*"
 wheel = "*"
 uwsgi = "*"
+pytesseract = "*"
+symspellpy = "*"
 
 [dev-packages]
 
