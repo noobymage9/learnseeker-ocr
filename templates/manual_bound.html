@@ -83,6 +83,9 @@
       <div id="cropped_area"></div>
     </div>
   </div>
+  <button onclick="recogniseImage()">Recognise</button>
+  <div id="result_area">
+  </div>
 </body>
 
 <script>
@@ -181,12 +184,14 @@
     var previewArea = document.querySelector('#image_preview_area')
     var files = document.querySelector('#file_upload').files
     var croppedArea = document.querySelector('#cropped_area')
+    const textArea = document.querySelector("#result_area")
     var imageData = []
     // Clear existing cropped images
     croppedArea.innerHTML = ""
     // Clears previous upload previews
     previewArea.innerHTML = ""
-
+    // Clear preview results
+    textArea.innerHTML = ""
     if (files) {
       [].forEach.call(files, preview)
     }
@@ -305,5 +310,40 @@
         croppedArea.append(newCanvas)
       })
     }
+  }
+
+  function recogniseImage() {
+    const croppedArea = document.querySelector('#cropped_area')
+    const textArea = document.querySelector("#result_area")
+
+    // Clear preview results
+    textArea.innerHTML = ""
+    const resultTag = document.createElement("h3")
+    resultTag.append("Result Area")
+    textArea.appendChild(resultTag)
+    
+    const children = croppedArea.children
+    const images = []
+    const childrenArray = Array.from(children);
+    childrenArray.forEach(child => images.push(child.toDataURL()))
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "{{ url }}text_recognise", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        data.texts.forEach((text, index) => {
+          const headerTag = document.createElement("h3")
+          const textTag = document.createElement("p")
+          headerTag.append(`Area ${index + 1}`)
+          textTag.append(text)
+          textArea.appendChild(headerTag)
+          textArea.appendChild(textTag)
+        })
+      }
+    };
+    var data = JSON.stringify({ "images": images });
+    xhr.send(data);
   }
 </script>

@@ -75,22 +75,29 @@
     function preprocess_image() {
       var previewArea = document.querySelector('#image_preview_area')
       var croppedArea = document.querySelector('#cropped_area')
+      const textArea = document.querySelector("#result_area")
       // Clear existing cropped images
       croppedArea.innerHTML = ""
       // Clears previous upload previews
       previewArea.innerHTML = ""
+      // Clear preview results
+      textArea.innerHTML = ""
+
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "{{ url }}image_preprocess", true);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
           var data = JSON.parse(xhr.responseText)
+          const images = []
           for (i in data['images']) {
             preprocessedImage = data['images'][i]
             var imageHolder = document.createElement("div");
             var buttonHolder = document.createElement("div")
             imageHolder.className = "image_holder space"
-            var image = createImage(`data:image/png;base64,${preprocessedImage}`, 800, 600)
+            var rawImage = `data:image/png;base64,${preprocessedImage}`
+            images.push(rawImage)
+            var image = createImage(rawImage, 800, 600)
             imageHolder.appendChild(buttonHolder)
             imageHolder.appendChild(image)
             previewArea.appendChild(imageHolder)
@@ -100,6 +107,15 @@
               var image = createImage(`data:image/png;base64,${croppedImage}`, data['cropped_areas']['size'][i][j][1], data['cropped_areas']['size'][i][j][0])
               croppedArea.appendChild(image)
             }
+
+            data['texts'].forEach((text, index) => {
+              const headerTag = document.createElement("h3")
+              const textTag = document.createElement("p")
+              headerTag.append(`Area ${index + 1}`)
+              textTag.append(text)
+              textArea.appendChild(headerTag)
+              textArea.appendChild(textTag)
+            })
           }
         }
       }
@@ -122,6 +138,9 @@
       <h2>Cropped Areas</h2>
       <div id="cropped_area"></div>
     </div>
+  </div>
+  <h3>Result Area</h3>
+  <div id="result_area">
   </div>
 </body>
 
