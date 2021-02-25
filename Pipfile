@@ -18,6 +18,8 @@ wheel = "*"
 uwsgi = "*"
 pytesseract = "*"
 symspellpy = "*"
+pytest = "*"
+flask-unittest = "*"
 
 [dev-packages]
 
