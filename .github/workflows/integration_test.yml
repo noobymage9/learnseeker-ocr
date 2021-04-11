@@ -14,19 +14,16 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+
       - name: Install dependencies
-        run: | 
+        run: |
+          pipenv install
           sudo apt-get install libhdf5-dev libhdf5-serial-dev libhdf5-100
           sudo apt-get install libqtgui4 libqtwebkit4 libqt4-test python3-pyqt5
           sudo apt-get install libatlas-base-dev
           sudo apt-get install libjasper-dev
-
-      - name: Install pipenv
-        uses: dschep/install-pipenv-action@v1
-
-      - name: Install libraries
-        run: |
-          pipenv install
           pipenv install opencv-python
 
       - name: Run pytest
