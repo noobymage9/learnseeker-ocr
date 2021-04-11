@@ -12,3 +12,9 @@ class IntegrationTest(TestCase):
     tester = app.test_client(self)
     response = tester.get('/manual_bound', content_type='html/text')
     self.assertEqual(response.status_code, 200)
+
+  # Assert GET /auto_bound exist
+  def test_auto_bound(self):
+    tester = app.test_client(self)
+    response = tester.get('/auto_bound', content_type='html/text')
+    self.assertEqual(response.status_code, 200)
