@@ -20,6 +20,7 @@ pytesseract = "*"
 symspellpy = "*"
 pytest = "*"
 flask-unittest = "*"
+imutils = "*"
 
 [dev-packages]
 
