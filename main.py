@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from base64 import b64decode, b64encode
 from os import environ
 from image_preprocess_factory import preprocess, zone
@@ -8,6 +8,10 @@ import cv2 as cv
 import pytesseract
 app = Flask(__name__)
 
+
+@app.route('/home')
+def home():
+	return render_template('home.html', url=request.url_root)
 
 # Method 1
 @app.route('/auto_bound')
@@ -38,13 +42,13 @@ def image_preprocess():
 		data['images'].append(encode(image = preprocessed_image))
 		# if auto bound
 		if 'zone_type' in request.json:
-			croppedAreas = zone(preprocessed_image, request.json['zone_type'])
-			for idx, croppedArea in enumerate(croppedAreas):
-				data["texts"].append(pytesseract.image_to_string(croppedArea))
+			cropped_areas = zone(preprocessed_image, request.json['zone_type'])
+			for idx, cropped_area in enumerate(cropped_areas):
+				data["texts"].append(pytesseract.image_to_string(cropped_area))
 
 			# spell_check(data['texts'])
-			data['cropped_areas']['areas'].append(encode(images = croppedAreas))
-			data['cropped_areas']['size'].append(list(map(lambda area: [(area.shape[1] / image.shape[1]) * 600, (area.shape[0] / image.shape[0]) * 800], croppedAreas)))
+			data['cropped_areas']['areas'].append(encode(images = cropped_areas))
+			data['cropped_areas']['size'].append(list(map(lambda area: [(area.shape[1] / image.shape[1]) * 600, (area.shape[0] / image.shape[0]) * 800], cropped_areas)))
 	
 	return jsonify(data)
 
@@ -75,6 +79,11 @@ def encode(image = [], images = []):
 		return temp
 	else:
 		return None
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def other(path):
+    return redirect(url_for('home'))
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')

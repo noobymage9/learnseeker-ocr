@@ -1,0 +1,49 @@
+<!doctype html>
+
+<head>
+  <title>Home</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      padding: 1rem;
+      box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      flex-direction: column;
+      animation: 1s ease-in-out 0s 1 bottom_slide;
+      overflow: hidden;
+    }
+    @keyframes bottom_slide {
+      0% {
+        transform: translateY(500%);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+    #root {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .space {
+      margin: 0.5rem
+    }
+
+    .border {
+      border: 2px solid black;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <h2>Home</h2>
+    <a class='space' href="./manual_bound"><button type="button">Manual Bound</button></a>
+    <a class='space' href="./auto_bound"><button type="button">Auto Bound</button></a>
+  </div>
+</body>
