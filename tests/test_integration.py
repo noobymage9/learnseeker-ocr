@@ -32,7 +32,7 @@ class IntegrationTest(TestCase):
   def test_manual_bound_image_preprocess(self):
     ''' POST Manual Bound Image Preprocess '''
     tester = app.test_client(self)
-    filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
+    filenames = glob(''.join([IMAGE_PATH, '/*.png']))
     filenames.sort()
     image = cv.imread(choice(filenames))
 
@@ -53,7 +53,7 @@ class IntegrationTest(TestCase):
   def test_manual_bound_multiple_image_preprocess(self):
     ''' POST Manual Bound Multiple Images Image Preprocess '''
     tester = app.test_client(self)
-    filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
+    filenames = glob(''.join([IMAGE_PATH, '/*.png']))
     filenames.sort()
     image_1 = cv.imread(choice(filenames))
     image_2 = cv.imread(choice(filenames))
@@ -75,7 +75,7 @@ class IntegrationTest(TestCase):
   def test_auto_bound_left_detect_image_preprocess(self):
     ''' POST Auto Bound Left Detect Image Preprocess '''
     tester = app.test_client(self)
-    filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
+    filenames = glob(''.join([IMAGE_PATH, '/*.png']))
     filenames.sort()
     image = cv.imread(choice(filenames))
 
@@ -97,7 +97,7 @@ class IntegrationTest(TestCase):
   def test_auto_bound_multiple_left_detect_image_preprocess(self):
     ''' POST Auto Bound Multiple Images Left Detect Image Preprocess '''
     tester = app.test_client(self)
-    filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
+    filenames = glob(''.join([IMAGE_PATH, '/*.png']))
     filenames.sort()
     image_1 = cv.imread(choice(filenames))
     image_2 = cv.imread(choice(filenames))
@@ -120,7 +120,7 @@ class IntegrationTest(TestCase):
   def test_auto_bound_grow_image_preprocess(self):
     ''' POST Auto Bound Grow Image Preprocess '''
     tester = app.test_client(self)
-    filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
+    filenames = glob(''.join([IMAGE_PATH, '/*.png']))
     filenames.sort()
     image = cv.imread(choice(filenames))
 
@@ -145,7 +145,7 @@ class IntegrationTest(TestCase):
   def test_auto_bound_multiple_grow_image_preprocess(self):
     ''' POST Auto Bound Multiple Images Grow Image Preprocess '''
     tester = app.test_client(self)
-    filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
+    filenames = glob(''.join([IMAGE_PATH, '/*.png']))
     filenames.sort()
     image_1 = cv.imread(choice(filenames))
     image_2 = cv.imread(choice(filenames))

@@ -20,7 +20,7 @@ def test_binarise():
 
 def test_encode():
   ''' Image Encode '''
-  filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
+  filenames = glob(''.join([IMAGE_PATH, '/*.png']))
   filenames.sort()
   image = cv.imread(choice(filenames))
   image_raw = encode(image)
