@@ -1,4 +1,4 @@
-name: Integration Test
+name: Unit Test
 
 on:  
   [push]
@@ -20,17 +20,17 @@ jobs:
 
       - name: Run pytest
         run: |
-          coverage run --source=main -m pytest ./tests/test_integration.py > integration_test.txt
+          coverage run --source=ocr -m pytest ./tests/test_unit.py > unit_test.txt
           coverage html
 
       - name: Upload pytest log
         uses: actions/upload-artifact@v2
         with:
-          name: integration-test-log
-          path: integration_test.txt
+          name: unit-test-log
+          path: unit_test.txt
 
       - name: Upload coverage
         uses: actions/upload-artifact@v2
         with:
-          name: integration-test-coverage
+          name: unit-test-coverage
           path: htmlcov
