@@ -59,6 +59,34 @@
       justify-content: center;
     }
 
+    .flash {
+      animation: fade_out 1.5s ease-in-out
+    }
+
+    #flash_message {
+      position: relative;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #CCCCCC;
+      padding-left: 1%;
+      padding-right: 1%;
+      padding-top: 0.5%;
+      padding-bottom: 0.5%;
+      border-radius: 20%;
+      opacity: 0%;
+    }
+
+    @keyframes fade_out {
+      0% {
+        opacity: 100%;
+      }
+
+      100% {
+        opacity: 0%;
+      }
+    }
+
     .image_holder {
       margin: 0.5rem;
       scroll-snap-align: start;
@@ -69,6 +97,10 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+    }
+
+    .text_span {
+      user-select: all;
     }
   </style>
   <script>
@@ -110,11 +142,26 @@
 
             data['texts'].forEach((text, index) => {
               const headerTag = document.createElement("h3")
+              const spanTag = document.createElement("span")
               const textTag = document.createElement("p")
+              const copiedFlash = document.getElementById("flash_message")
               headerTag.append(`Area ${index + 1}`)
               textTag.append(text)
+              spanTag.append(textTag)
+              spanTag.className = 'text_span'
+              spanTag.onclick = (event) => {
+                copiedFlash.className = "flash"
+                copiedFlash.onanimationend = (event) => copiedFlash.className = null
+                document.execCommand('copy')
+              }
+              spanTag.addEventListener('copy', (event) => {
+                event.preventDefault()
+                if (event.clipboardData) {
+                  event.clipboardData.setData('text/plain', text)
+                }
+              })
               textArea.appendChild(headerTag)
-              textArea.appendChild(textTag)
+              textArea.appendChild(spanTag)
             })
           }
         }
@@ -141,6 +188,9 @@
   </div>
   <h3>Result Area</h3>
   <div id="result_area">
+  </div>
+  <div id="flash_message">
+    <p>Copied !</p>
   </div>
 </body>
 
