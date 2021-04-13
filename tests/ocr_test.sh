@@ -1,3 +1,12 @@
+echo "Tesseract Predicting..."
+python ./scripts/tesseract_predict.py
+
+echo "Calamari Predicting..."
+./scripts/calamari_predict.sh
+
+echo "Kraken Predicting..."
+./scripts/kraken_predict.sh
+
 echo "Running character accuracy..."
 ./scripts/ocreval/character_accuracy.sh
 
