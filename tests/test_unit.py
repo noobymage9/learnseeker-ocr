@@ -9,7 +9,7 @@ from base64 import b64decode
 
 IMAGE_SIZE = 512
 PIXEL_MAX = 255
-IMAGE_PATH = "./dataset/image"
+IMAGE_PATH = "./assets/images"
 
 def test_binarise():
   ''' Text Binarise '''
