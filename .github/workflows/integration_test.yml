@@ -20,7 +20,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          coverage run --source=main -m pytest -v ./tests/test_integration.py > integration_test.txt && coverage html || True
+          coverage run --source=main -m pytest -v ./tests/test_integration.py > integration_test.txt && coverage html || true
 
       - name: Upload pytest log
         uses: actions/upload-artifact@v2
