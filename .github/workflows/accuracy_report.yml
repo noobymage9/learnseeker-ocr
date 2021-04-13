@@ -1,0 +1,28 @@
+name: Accuracy Report
+
+on:  
+  [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r ./requirements.txt
+
+      - name: Run ocr test
+        run: ./tests/ocr_test.sh
+      
+      - name: Upload report
+        uses: actions/upload-artifact@v2
+        with:
+          name: accuracy-report
+          path: reports
