@@ -20,8 +20,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          coverage run --source=main -m pytest ./tests/test_integration.py > integration_test.txt
-          coverage html
+          coverage run --source=main -m pytest ./tests/test_integration.py > integration_test.txt && coverage html
 
       - name: Upload pytest log
         uses: actions/upload-artifact@v2
@@ -34,3 +33,23 @@ jobs:
         with:
           name: integration-test-coverage
           path: htmlcov
+
+      - name: Get current branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: branch_name
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        if: ${{ steps.branch_name.outputs.branch }} == 'main'
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-1
+          role-duration-seconds: 1200
+          role-session-name: CodeDeploySession
+
+      - name: Deployment to Production
+        if: ${{ steps.branch_name.outputs.branch }} == 'main'
+        run: |
+          aws deploy create-deployment --application-name LearnseekerOCR --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name LearnseekerOCRDeploymentGroup-Production --description "Automated deployment of production via GitHub Actions and CodeDeploy" --github-location repository=noobymage9/learnseeker-ocr,commitId=${{ github.sha }}

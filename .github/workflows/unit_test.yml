@@ -20,8 +20,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          coverage run --source=ocr -m pytest ./tests/test_unit.py > unit_test.txt
-          coverage html
+          coverage run --source=ocr -m pytest ./tests/test_unit.py > unit_test.txt && coverage html
 
       - name: Upload pytest log
         uses: actions/upload-artifact@v2
