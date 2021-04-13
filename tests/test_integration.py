@@ -9,7 +9,7 @@ from glob import glob
 from random import choice
 import cv2 as cv
 
-IMAGE_PATH = "./asset/images"
+IMAGE_PATH = "./assets/images"
 PHRASE_PATH = "./assets/phrases"
 
 class IntegrationTest(TestCase):
