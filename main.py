@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
-from base64 import b64decode, b64encode
 from os import environ, makedirs
 from ocr import image_preprocess_factory
-from utilities import spell_check
+from utilities import spell_check, encode, decode
 import numpy as np
 import cv2 as cv
 import pytesseract
@@ -39,8 +38,7 @@ def image_preprocess():
 	}
 	for idx, image_data_pack in enumerate(request.json['images']):
 		image_data = image_data_pack.split(',')[1]
-		image_bytes = b64decode(image_data)
-		image = cv.imdecode(np.frombuffer(image_bytes, np.uint8), -1)
+		image = decode(image_data)
 		preprocessed_image = image_preprocess_factory.preprocess(image)
 		data['images'].append(encode(image = preprocessed_image))
 		# if auto bound
@@ -62,8 +60,7 @@ def text_recognise():
 	}
 	for idx, image_data_pack in enumerate(request.json['images']):
 		image_data = image_data_pack.split(',')[1]
-		image_bytes = b64decode(image_data)
-		image = cv.imdecode(np.frombuffer(image_bytes, np.uint8), -1)
+		image = decode(image_data)
 		data["texts"].append(pytesseract.image_to_string(image))
 
 		if CAPTURE_PHRASE:
@@ -74,20 +71,6 @@ def text_recognise():
 
 	# spell_check(data['texts'])
 	return jsonify(data)
-
-def encode(image = [], images = []):
-	if len(image) != 0:
-		_, buffer = cv.imencode(".png", image)
-		return b64encode(buffer).decode('utf-8')
-	elif len(images) != 0:
-		temp = []
-		for image in images:
-			if len(image) > 5:
-				_, buffer = cv.imencode(".png", image)
-				temp.append(b64encode(buffer).decode('utf-8'))
-		return temp
-	else:
-		return None
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

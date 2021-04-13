@@ -1,5 +1,7 @@
 from symspellpy import SymSpell
-
+from base64 import b64decode, b64encode
+import cv2 as cv
+import numpy as np
 DICTIONARY_PATH = './assets/frequency_dictionary_en_82_765.txt'
 BIGRAM_PATH = './assets/frequency_bigramdictionary_en_243_342.txt'
 
@@ -18,3 +20,22 @@ def spell_check(texts):
       texts[idx] = suggestions[0]._term
 
   
+def encode(image = [], images = []):
+	if len(image) != 0:
+		_, buffer = cv.imencode(".png", image)
+		return b64encode(buffer).decode('utf-8')
+	elif len(images) != 0:
+		temp = []
+		for image in images:
+			if len(image) > 5:
+				_, buffer = cv.imencode(".png", image)
+				temp.append(b64encode(buffer).decode('utf-8'))
+		return temp
+	else:
+		return None
+
+def decode(image_raw):
+  if image_raw is None or len(image_raw) == 0:
+    return None
+  image_bytes = b64decode(image_raw)
+  return cv.imdecode(np.frombuffer(image_bytes, np.uint8), -1)
