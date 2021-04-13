@@ -1,12 +1,12 @@
 from os.path import join
-from os import mkdir
+from os import makedirs
 from glob import glob
 import cv2 as cv
 import pytesseract
 
 DUMP_PATH = './assets/recognitions/tesseract'
 IMAGE_PATH = "./assets/phrases"
-mkdir(DUMP_PATH)
+makedirs(DUMP_PATH, exist_ok=True)
 
 filenames = glob(''.join([IMAGE_PATH, '/*.png']))
 filenames.sort()
