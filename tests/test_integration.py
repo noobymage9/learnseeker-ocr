@@ -16,18 +16,21 @@ class IntegrationTest(TestCase):
 
   # Assert GET /manual_bound exist
   def test_manual_bound(self):
+    ''' GET Manual Bound Page '''
     tester = app.test_client(self)
     response = tester.get('/manual_bound', content_type='html/text')
     self.assertEqual(response.status_code, 200)
 
   # Assert GET /auto_bound exist
   def test_auto_bound(self):
+    ''' GET Auto Bound Page '''
     tester = app.test_client(self)
     response = tester.get('/auto_bound', content_type='html/text')
     self.assertEqual(response.status_code, 200)
 
 
   def test_manual_bound_image_preprocess(self):
+    ''' POST Manual Bound Image Preprocess '''
     tester = app.test_client(self)
     filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
     filenames.sort()
@@ -48,6 +51,7 @@ class IntegrationTest(TestCase):
     assert len(result.get('images')) == 1
 
   def test_manual_bound_multiple_image_preprocess(self):
+    ''' POST Manual Bound Multiple Images Image Preprocess '''
     tester = app.test_client(self)
     filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
     filenames.sort()
@@ -69,6 +73,7 @@ class IntegrationTest(TestCase):
     assert len(result.get('images')) == 2
     
   def test_auto_bound_left_detect_image_preprocess(self):
+    ''' POST Auto Bound Left Detect Image Preprocess '''
     tester = app.test_client(self)
     filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
     filenames.sort()
@@ -90,6 +95,7 @@ class IntegrationTest(TestCase):
     assert len(result.get('images')) == 1
 
   def test_auto_bound_multiple_left_detect_image_preprocess(self):
+    ''' POST Auto Bound Multiple Images Left Detect Image Preprocess '''
     tester = app.test_client(self)
     filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
     filenames.sort()
@@ -112,6 +118,7 @@ class IntegrationTest(TestCase):
     assert len(result.get('images')) == 2
 
   def test_auto_bound_grow_image_preprocess(self):
+    ''' POST Auto Bound Grow Image Preprocess '''
     tester = app.test_client(self)
     filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
     filenames.sort()
@@ -136,6 +143,7 @@ class IntegrationTest(TestCase):
     assert len(result.get('texts')) > 0
 
   def test_auto_bound_multiple_grow_image_preprocess(self):
+    ''' POST Auto Bound Multiple Images Grow Image Preprocess '''
     tester = app.test_client(self)
     filenames = glob(''.join([IMAGE_PATH, '/*/*.png']))
     filenames.sort()
@@ -161,6 +169,7 @@ class IntegrationTest(TestCase):
     assert len(result.get('texts')) > 0
 
   def test_text_recognise(self):
+    ''' POST Text Recognise '''
     tester = app.test_client(self)
     filenames = glob(''.join([PHRASE_PATH, '/*.png']))
     filenames.sort()
@@ -175,6 +184,7 @@ class IntegrationTest(TestCase):
     assert len(result.get('texts')) == 1
 
   def test_text_recognise_multiple(self):
+    ''' Post Text Recognise Multiple Images '''
     tester = app.test_client(self)
     filenames = glob(''.join([PHRASE_PATH, '/*.png']))
     filenames.sort()
