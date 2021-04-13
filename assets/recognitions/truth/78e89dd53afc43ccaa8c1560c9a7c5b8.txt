@@ -1,0 +1,2 @@
+b) Copper object is not a magnet nor a magnetic material. It cannot be
+attracted or repelled by the electromagnet.
