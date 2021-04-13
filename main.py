@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from base64 import b64decode, b64encode
-from os import environ
+from os import environ, makedirs
 from ocr import image_preprocess_factory
 from utilities import spell_check
 import numpy as np
@@ -67,9 +67,10 @@ def text_recognise():
 		data["texts"].append(pytesseract.image_to_string(image))
 
 		if CAPTURE_PHRASE:
+			makedirs('./assets/phrases', exist_ok=True)
 			word_image = image
 			word_image = Image.fromarray(word_image)
-			word_image.save(''.join(['./dataset/phrases', '/', f'{uuid4().hex}.png']), 'PNG')
+			word_image.save(''.join(['./assets/phrases', '/', f'{uuid4().hex}.png']), 'PNG')
 
 	# spell_check(data['texts'])
 	return jsonify(data)
