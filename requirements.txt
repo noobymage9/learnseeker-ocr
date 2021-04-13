@@ -17,6 +17,7 @@ click==7.1.2
 colorama==0.4.3
 contextlib2==0.6.0
 coremltools==4.1
+coverage==5.5
 cycler==0.10.0
 dataclasses-json==0.5.2
 decorator==4.4.2
