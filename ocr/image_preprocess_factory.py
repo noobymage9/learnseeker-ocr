@@ -100,38 +100,39 @@ def initial_zones_of(image):
 def left_detect(rects, image):
   print("ALL RECTS")
   display(rects)
-  lowest_x = min(x for (x,y,w,h) in rects)
-  height, width = image.shape
-  question_num_idx = rects.index([rect for rect in rects if lowest_x in rect][0])
-  left_most_rect = rects[question_num_idx]
-  del rects[question_num_idx]
-  question_num_rects = [left_most_rect]
-  while(True):
-    next_lowest_x = min(x for (x,y,w,h) in rects)
-    next_left_most_rect_idx = rects.index([rect for rect in rects if next_lowest_x in rect][0])
-    next_left_most_rect = rects[next_left_most_rect_idx]
-    if next_left_most_rect[0] - left_most_rect[0] <= LEFT_RECT_DIFF_THRESHOLD:
-      del rects[next_left_most_rect_idx]
-      question_num_rects.append(next_left_most_rect)
-    else:
-      break;
-  question_num_rects.sort(key = lambda x: x[1])
-  rects = []
-  print("CAPTURED QN NUM BLOCK")
-  display(question_num_rects)
-  for idx, question_num_rect in enumerate(question_num_rects):
-    try:
-      next_rect = question_num_rects[idx+1]
-    except Exception as e:
-      print(f'Error message: {e}')
+  if rects is not None:
+    lowest_x = min(x for (x,y,w,h) in rects)
+    height, width = image.shape
+    question_num_idx = rects.index([rect for rect in rects if lowest_x in rect][0])
+    left_most_rect = rects[question_num_idx]
+    del rects[question_num_idx]
+    question_num_rects = [left_most_rect]
+    while(True):
+      next_lowest_x = min(x for (x,y,w,h) in rects)
+      next_left_most_rect_idx = rects.index([rect for rect in rects if next_lowest_x in rect][0])
+      next_left_most_rect = rects[next_left_most_rect_idx]
+      if next_left_most_rect[0] - left_most_rect[0] <= LEFT_RECT_DIFF_THRESHOLD:
+        del rects[next_left_most_rect_idx]
+        question_num_rects.append(next_left_most_rect)
+      else:
+        break;
+    question_num_rects.sort(key = lambda x: x[1])
+    rects = []
+    print("CAPTURED QN NUM BLOCK")
+    display(question_num_rects)
+    for idx, question_num_rect in enumerate(question_num_rects):
+      try:
+        next_rect = question_num_rects[idx+1]
+      except Exception as e:
+        print(f'Error message: {e}')
+        rects.append([question_num_rect[0] - QUESTION_BLK_MARGIN, question_num_rect[1] - QUESTION_BLK_MARGIN, width - question_num_rect[0], 
+                 height - question_num_rect[1]])
+        break;
       rects.append([question_num_rect[0] - QUESTION_BLK_MARGIN, question_num_rect[1] - QUESTION_BLK_MARGIN, width - question_num_rect[0], 
-               height - question_num_rect[1]])
-      break;
-    rects.append([question_num_rect[0] - QUESTION_BLK_MARGIN, question_num_rect[1] - QUESTION_BLK_MARGIN, width - question_num_rect[0], 
-              next_rect[1] - QUESTION_BLK_MARGIN - question_num_rect[1]])
-  print("AFTER CAPTURE")
-  display(rects)
-  return rects
+                next_rect[1] - QUESTION_BLK_MARGIN - question_num_rect[1]])
+    print("AFTER CAPTURE")
+    display(rects)
+    return rects
 
 def zone_grow(rects, iteration):
 
