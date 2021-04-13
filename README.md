@@ -1,9 +1,9 @@
 # learnseeker-ocr
 An Optical Character Recognition for extracting both Handwriting and Text from Paper Records<br/>
 
-[accuracy-report workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/accuracy_report.yml/badge.svg)
-[integration-test workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/integration_test.yml/badge.svg)
-[unit-test workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/unit_test.yml/badge.svg)
+![accuracy-report workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/accuracy_report.yml/badge.svg)
+![integration-test workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/integration_test.yml/badge.svg)
+![unit-test workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/unit_test.yml/badge.svg)
 
 ## Python Version
 3.8.5
