@@ -4,3 +4,5 @@ dataset
 learning/.ipynb_checkpoints
 __pycache__
 reports
+assets/recognitions/*
+!assets/recognitions/truth
