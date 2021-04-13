@@ -15,12 +15,12 @@ jobs:
           python-version: 3.8
 
       - name: Install dependencies
-        run: |
-          pip install -r ./requirements.txt
+        run: pip install -r ./requirements.txt
 
       - name: Run pytest
         run: |
           coverage run --source=main -m pytest -v ./tests/test_integration.py > integration_test.txt && coverage html || true
+          coverage html || true
 
       - name: Upload pytest log
         uses: actions/upload-artifact@v2
