@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r ./requirements.txt
-          sudo apt-get install build-essentials
+          sudo apt-get install build-essential
           sudo apt-get install libutf8proc-dev
           cd ocreval
           sudo make install
