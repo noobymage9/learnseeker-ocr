@@ -1,4 +1,4 @@
-files=./dataset/phrases/*
+files=./assets/phrases/*
 mkdir -p ./reports/tesseract/character_accuracy/raw/
 mkdir -p ./reports/calamari_0/character_accuracy/raw/
 mkdir -p ./reports/calamari_1/character_accuracy/raw/
@@ -13,36 +13,36 @@ do
   strings=(${f//// })
   uuid_png=(${strings[3]//./ })
   uuid=${uuid_png[0]}
-  correct_file=./dataset/recognitions/truth/$uuid.txt
+  correct_file=./assets/recognitions/truth/$uuid.txt
 
   tesseract_acc_output=./reports/tesseract/character_accuracy/raw/$uuid.txt
-  tesseract_generated_file=./dataset/recognitions/tesseract/$uuid.txt
+  tesseract_generated_file=./assets/recognitions/tesseract/$uuid.txt
   accuracy $correct_file $tesseract_generated_file $tesseract_acc_output
 
   calamari_0_acc_output=./reports/calamari_0/character_accuracy/raw/$uuid.txt
-  calamari_0_generated_file=./dataset/recognitions/calamari_0/$uuid.pred.txt
+  calamari_0_generated_file=./assets/recognitions/calamari_0/$uuid.pred.txt
   accuracy $correct_file $calamari_0_generated_file $calamari_0_acc_output
 
   calamari_1_acc_output=./reports/calamari_1/character_accuracy/raw/$uuid.txt
-  calamari_1_generated_file=./dataset/recognitions/calamari_1/$uuid.pred.txt
+  calamari_1_generated_file=./assets/recognitions/calamari_1/$uuid.pred.txt
   accuracy $correct_file $calamari_1_generated_file $calamari_1_acc_output
 
   calamari_2_acc_output=./reports/calamari_2/character_accuracy/raw/$uuid.txt
-  calamari_2_generated_file=./dataset/recognitions/calamari_2/$uuid.pred.txt
+  calamari_2_generated_file=./assets/recognitions/calamari_2/$uuid.pred.txt
   accuracy $correct_file $calamari_2_generated_file $calamari_2_acc_output
 
   calamari_3_acc_output=./reports/calamari_3/character_accuracy/raw/$uuid.txt
-  calamari_3_generated_file=./dataset/recognitions/calamari_3/$uuid.pred.txt
+  calamari_3_generated_file=./assets/recognitions/calamari_3/$uuid.pred.txt
   accuracy $correct_file $calamari_3_generated_file $calamari_3_acc_output
 
   mkdir -p ./reports/calamari_4/character_accuracy/raw/
   calamari_4_acc_output=./reports/calamari_4/character_accuracy/raw/$uuid.txt
-  calamari_4_generated_file=./dataset/recognitions/calamari_4/$uuid.pred.txt
+  calamari_4_generated_file=./assets/recognitions/calamari_4/$uuid.pred.txt
   accuracy $correct_file $calamari_4_generated_file $calamari_4_acc_output
 
   mkdir -p ./reports/kraken/character_accuracy/raw/
   kraken_acc_output=./reports/kraken/character_accuracy/raw/$uuid.txt
-  kraken_generated_file=./dataset/recognitions/kraken/$uuid.txt
+  kraken_generated_file=./assets/recognitions/kraken/$uuid.txt
   accuracy $correct_file $kraken_generated_file $kraken_acc_output
 done
 

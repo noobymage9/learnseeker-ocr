@@ -1,4 +1,4 @@
-correct_files=./dataset/recognitions/truth/*
+correct_files=./assets/recognitions/truth/*
 ngram $correct_files > ngram
 ngram=./ngram
 
