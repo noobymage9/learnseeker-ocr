@@ -13,10 +13,21 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-
+      - name: 'Preparing blueprint-environment'
+        uses: actions/checkout@v2
+        with:
+          repository: eddieantonio/ocreval
+          path: ocreval
+        
       - name: Install dependencies
         run: |
           pip install -r ./requirements.txt
+          sudo apt-get install build-essentials
+          sudo apt-get install libutf8proc-dev
+          cd ocreval
+          sudo make install
+          make exports >> ~/.bashrc
+          cd ..
 
       - name: Run ocr test
         run: ./tests/ocr_test.sh
