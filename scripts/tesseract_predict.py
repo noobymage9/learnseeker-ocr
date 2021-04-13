@@ -4,7 +4,7 @@ from glob import glob
 import cv2 as cv
 import pytesseract
 
-DUMP_PATH = './assets/recognitions/tesseract/'
+DUMP_PATH = './assets/recognitions/tesseract'
 IMAGE_PATH = "./assets/phrases"
 makedirs(DUMP_PATH, exist_ok=True)
 
