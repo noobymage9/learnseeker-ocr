@@ -6,3 +6,5 @@ __pycache__
 reports
 assets/recognitions/*
 !assets/recognitions/truth
+htmlcov
+.coverage
