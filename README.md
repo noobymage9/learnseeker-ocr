@@ -1,5 +1,7 @@
 # learnseeker-ocr
 An Optical Character Recognition for extracting both Handwriting and Text from Paper Records<br/>
+Five OCR engines are onboard, mainly Tesseract, Kraken and the five models of Calamari<br/>
+Tesseract is loaded due to its higher accuracy<br/>
 
 ![accuracy-report workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/accuracy_report.yml/badge.svg)
 ![integration-test workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/integration_test.yml/badge.svg)
@@ -42,6 +44,3 @@ Identifies app entrypoint
 Set the running environment
 3. `CAPTURE_PHRASE` (`True` | `False`)
 Set whether should the `text_recognise` endpoint save images `./assets/phrases`
-
-
-
