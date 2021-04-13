@@ -19,7 +19,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          coverage run --source=ocr -m pytest ./tests/test_unit.py > unit_test.txt && coverage html || true
+          coverage run --source=ocr -m pytest -v ./tests/test_unit.py > unit_test.txt && coverage html || true
           coverage html || true
 
       - name: Upload pytest log
