@@ -8,7 +8,7 @@ Tesseract is loaded due to its higher accuracy<br/>
 ![unit-test workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/unit_test.yml/badge.svg)
 
 ## Python Version
-3.8.5
+3.8.0
 
 ## Set Up
 1. Install Python 3.8.5
