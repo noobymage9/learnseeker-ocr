@@ -20,6 +20,8 @@ Tesseract is loaded due to its higher accuracy<br/>
 - `jupyter notebook` for viewing `./learning` progress
 - `export FLASK_APP=main.py; export FLASK_ENV=development; export CAPTURE_PHRASE=False; flask run` for starting up flask. (Refer to [Environment Variable](#environment-variables))
 - `./development_start` for quick starting a development application
+- `./tests/ocr_test` for generating a accuracy report
+- `pytest` for running all python test cases
 
 ## Libraries
 - Flask
