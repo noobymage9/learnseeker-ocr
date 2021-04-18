@@ -11,7 +11,7 @@ Tesseract is loaded due to its higher accuracy<br/>
 3.8.0
 
 ## Set Up
-1. Install Python 3.8.5
+1. Install Python 3.8.0
 2. Install pip
 3. Clone this repository
 4. Change directory to this repository
