@@ -23,6 +23,8 @@ jobs:
         
       - name: Install dependencies
         run: |
+          sudo apt install tesseract-ocr
+          sudo apt install libtesseract-dev
           pip install -r ./requirements.txt
           sudo apt-get install build-essential
           sudo apt-get install libutf8proc-dev
