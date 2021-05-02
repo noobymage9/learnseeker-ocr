@@ -1,6 +1,7 @@
 # learnseeker-ocr
 An Optical Character Recognition for extracting both Handwriting and Text from Paper Records<br/>
 Five OCR engines are onboard, mainly Tesseract, Kraken and the five models of Calamari<br/>
+Dataset are not version checked into Git. Please add your own dataset at `./dataset` <br/>
 Tesseract is loaded due to its higher accuracy<br/>
 
 ![accuracy-report workflow](https://github.com/noobymage9/learnseeker-ocr/actions/workflows/accuracy_report.yml/badge.svg)
